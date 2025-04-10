@@ -9,6 +9,35 @@ import Spinner from "../components/Spinner";
 import { invalid_characters } from "../utils/Quotes";
 type Props = {};
 
+//Validators
+export const isStudentEmail = (email: string): boolean => {
+  return /^[0-9]{9}@tut4life\.ac\.za$/.test(email);
+};
+
+export const isStaffEmail = (email: string): boolean => {
+  return (
+    /^[0-9]{6}@tut\.ac\.za$/.test(email) || /^[a-zA-Z.]+@tut\.ac\.za$/.test(email)
+  );
+};
+
+export function isValidEmail(email: string, type: string): boolean {
+  const studentRegex = /^[0-9]{9}@tut4life\.ac\.za$/;
+  const staffRegex = /^[0-9]{6}@tut\.ac\.za$/;
+  return type === 'student' ? studentRegex.test(email) : staffRegex.test(email);
+}
+
+export function isValidStudentNumber(number: string, type: string): boolean {
+  const studentRegex = /^[0-9]{9}$/;
+  const staffRegex = /^[0-9]{6}$/;
+  return type === 'student' ? studentRegex.test(number) : staffRegex.test(number);
+}
+
+export function isValidContact(contact: string): boolean {
+  const contactRegex = /^(0[6-8][0-9]{8}|(\+27)[6-8][0-9]{8})$/;
+  return contactRegex.test(contact);
+}
+
+
 export default function DashboardAdmin({}: Props) {
   const input_ref = useRef<HTMLInputElement>(null);
   const [first_name, setFirstname] = useState("");
@@ -39,7 +68,7 @@ export default function DashboardAdmin({}: Props) {
   };
   useEffect(() => {}, []);
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
+    setEmail(event.target.value.toLowerCase());
   };
 
   const handleChangeFirstName = (
@@ -51,7 +80,8 @@ export default function DashboardAdmin({}: Props) {
       )
     ) {
     } else {
-      setFirstname(event.target.value);
+      setFirstname(event.target.value.trimStart());
+
     }
   };
   const handleChangeLastName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,29 +115,53 @@ export default function DashboardAdmin({}: Props) {
   };
   const handleChangeContact = (event: React.ChangeEvent<HTMLInputElement>) => {
     setContact(event.target.value);
+    const clean = event.target.value.replace(/[^0-9+]/g, '');
+    setContact(clean);
   };
   const v = (str: string) => {
     return str.length < 4;
   };
+  
+
   const is_valid = () => {
+    const [errorDetails, setErrorDetails] = useState("");
+
     if (
-      v(email) ||
       v(first_name) ||
       v(last_name) ||
       v(role) ||
       v(course) ||
       v(job) ||
-      v(contact) ||
-      v(gender) ||
-      v(student_num)
+      v(gender)
     ) {
       setValid(false);
+      setErrorDetails("All fields must be filled.");
       return false;
-    } else {
-      setValid(true);
-      return true;
     }
+  
+    if (!isValidEmail(email, role)) {
+      setErrorDetails("Invalid email format for selected role.");
+      setValid(false);
+      return false;
+    }
+  
+    if (!isValidStudentNumber(student_num, role)) {
+      setErrorDetails("Invalid student/staff number length.");
+      setValid(false);
+      return false;
+    }
+  
+    if (!isValidContact(contact)) {
+      setErrorDetails("Invalid contact number. Use SA format (e.g. 076... or +27...).");
+      setValid(false);
+      return false;
+    }
+  
+    setValid(true);
+    setErrorDetails("");
+    return true;
   };
+  
   const handle_csv_upload = () => {
     input_ref.current?.click();
   };
@@ -441,3 +495,7 @@ export default function DashboardAdmin({}: Props) {
     </div>
   );
 }
+function setErrorDetails(arg0: string) {
+  throw new Error("Function not implemented.");
+}
+

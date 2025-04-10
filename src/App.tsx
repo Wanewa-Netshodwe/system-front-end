@@ -16,6 +16,8 @@ import VerifyApi from "./pages/VerifyApi";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import AddToPlatform from "./pages/AddToPlatformPage";
 import AdminRegister from "./pages/AdminRegister";
+import SideMenuBarHR from "./components/SideMenuBarHR";
+
 
 
 function App() {
@@ -43,6 +45,7 @@ function App() {
           ></Route>
           <Route path="/MyAccount" element={<MyAccount />}></Route>
         </Route>
+        <Route path="/HR/sidebar" element={<SideMenuBarHR current={""} />}></Route>
       </Routes>
     </BrowserRouter>
   );

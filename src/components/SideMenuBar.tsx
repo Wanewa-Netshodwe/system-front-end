@@ -14,10 +14,10 @@ type Props = {
   current: string;
 };
 export const redirect_main = (user: UserState, nav: NavigateFunction) => {
-  if (user.first_name.length < 2) {
+  /*if (user.first_name.length < 2) {
     nav("/");
     window.location.reload();
-  }
+  }*/
 };
 
 export default function SideMenuBar({ current }: Props) {
