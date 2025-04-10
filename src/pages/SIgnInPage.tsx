@@ -138,7 +138,7 @@ const SignInPage = () => {
             Welcome Back
           </h1>
           <p className="font-poppins font-light text-[16px] mt-2">
-            Please enter your Attendance credentials.
+            Please enter your Attendance credentials below.
           </p>
           {message.length > 2 && (
             <div>
